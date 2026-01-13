@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Carlos Miguel Cariño</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <div class="logo">Potvrn4k_</div>
+            <div class="nav-links">
+                <a href="#work">Work</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Fullstack <br> Developer.</h1>
+            <div class="hero-grid">
+                <p class="hero-desc">
+                    Building digital experiences that focus on clarity, typography, and functional minimalism.
+                </p>
+                
+                <div class="edu-card">
+                    <span class="edu-tag">Education</span>
+                    <p><strong>National University — Fairview</strong></p>
+                    <p>BSIT: Mobile and Internet Technologies</p>
+                </div>
+            </div>
+        </header>
+
+        <section id="work" class="projects">
+            <a href="https://github.com/carlxsx/Esmile.git" target="_blank" class="project-card-link">
+                <div class="project-card">
+                    <h3>01. Esmile</h3>
+                    <p>Dental Appointment System - 3rd Year Capstone Project</p>
+                </div>
+            </a>
+
+            <a href="https://github.com/carlxsx/iWash.git" target="_blank" class="project-card-link">
+                <div class="project-card">
+                    <h3>02. IWash</h3>
+                    <p>Integrated Car Wash & Web-Based Booking System for 1 Elite Automotive.</p>
+                </div>
+            </a>
+
+            <a href="https://github.com/carlxsx/SmartFaq.git" target="_blank" class="project-card-link">
+                <div class="project-card">
+                    <h3>03. Smart FAQ</h3>
+                    <p>A Simple FAQ Management App (Electron + HTML/JS/CSS)</p>
+                </div>
+            </a>
+
+            <a href="https://github.com/carlxsx/PakundoCars-Website.git" target="_blank" class="project-card-link">
+                <div class="project-card">
+                    <h3>04. Pakundo Cars</h3>
+                    <p>Business website (currently under development)</p>
+                </div>
+            </a>
+        </section>
+
+        <section id="about" class="cv-section">
+            <div class="cv-container">
+                <div class="cv-text">
+                    <h2>Experience & Resume</h2>
+                    <p>I specialize in creating high-performance digital products. My resume covers my technical stack, past roles at design agencies, and my approach to minimal UI/UX.</p>
+                    
+                    <div class="cv-actions">
+                        <a href="resume/Carlos-Miguel-Angeles-Carino.pdf" download class="btn">Download CV</a>
+                        <a href="resume/Carlos-Miguel-Angeles-Carino.pdf" target="_blank" class="btn btn-outline">Live Preview</a>
+                    </div>
+                </div>
+                
+                <div class="cv-preview">
+                    <div class="document-mockup">
+                        <div class="line long"></div>
+                        <div class="line medium"></div>
+                        <div class="line short"></div>
+                        <div class="line long"></div>
+                        <div class="line long"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2>Let's Connect</h2>
+                    <p>I’m always open to discussing new projects, creative ideas, or opportunities to be part of your visions.</p>
+                    
+                    <div class="social-links">
+                        <a href="https://github.com/carlxsx" target="_blank" aria-label="GitHub">
+                            <i data-lucide="github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/carlos-miguel-cari%C3%B1o-492430253/" target="_blank" aria-label="LinkedIn">
+                            <i data-lucide="linkedin"></i>
+                        </a>
+                        <a href="https://www.facebook.com/mikar.kilam/" target="_blank" aria-label="Facebook">
+                            <i data-lucide="facebook"></i>
+                        </a>
+                        <a href="mailto:miguel.carlosc27@gmail.com" aria-label="Email">
+                            <i data-lucide="mail"></i>
+                        </a>
+                    </div>
+
+                    <script>
+                    lucide.createIcons();
+                    </script>
+                </div>
+
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea rows="5" placeholder="Tell me about your project" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </section>
+
+        <footer>
+            &copy; 2026 Carlos Miguel Cariño. Built with Focus.
+        </footer>
+    </div>
+
+</body>
+</html>
