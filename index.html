@@ -131,6 +131,7 @@
                         <div class="form-row">
                             <label>> NAME:</label>
                             <input type="text" spellcheck="false" placeholder="REQUIRED">
+                            <input type="text" id="alt_email_check" style="display:none !important" tabindex="-1" autocomplete="off">
                         </div>
                         <div class="form-row">
                             <label>> EMAIL:</label>
@@ -228,22 +229,64 @@
             }
         });
 
-        // 6. Final Form Submission with Dual EmailJS Templates
+        // 6. Final Form Submission with Spam/Bot Protection & Persistence
         const contactForm = document.querySelector('.terminal-form');
         const successOverlay = document.getElementById('successOverlay');
 
         if (contactForm) {
+            const btn = contactForm.querySelector('.submit-btn');
+
+            // Function to disable button and show remaining time
+            function disableButton(ms) {
+                const mins = Math.ceil(ms / 60000);
+                btn.innerText = `SYSTEM_LOCKED: ${mins}m_REMAINING`;
+                btn.style.opacity = "0.5";
+                btn.disabled = true;
+                btn.style.cursor = "not-allowed";
+                
+                const timer = setInterval(() => {
+                    const remaining = localStorage.getItem('email_cooldown') - Date.now();
+                    if (remaining > 0) {
+                        const currentMins = Math.ceil(remaining / 60000);
+                        btn.innerText = `SYSTEM_LOCKED: ${currentMins}m_REMAINING`;
+                    } else {
+                        clearInterval(timer);
+                        btn.innerText = "EXECUTE_SEND";
+                        btn.style.opacity = "1";
+                        btn.disabled = false;
+                        btn.style.cursor = "pointer";
+                        localStorage.removeItem('email_cooldown');
+                    }
+                }, 10000); // Check every 10 seconds
+            }
+
+            // Check for existing cooldown on page load
+            const savedCooldown = localStorage.getItem('email_cooldown');
+            if (savedCooldown) {
+                const timeLeft = savedCooldown - Date.now();
+                if (timeLeft > 0) disableButton(timeLeft);
+            }
+
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                const btn = contactForm.querySelector('.submit-btn');
                 const inputs = contactForm.querySelectorAll('input, textarea');
-                let isError = false;
+                const honeypot = document.getElementById('alt_email_check');
 
+                // BOT CHECK: If honeypot is filled, silent fail
+                if (honeypot && honeypot.value !== "") {
+                    console.warn("BOT_DETECTED: TRANSMISSION_VOIDED");
+                    successOverlay.classList.add('active');
+                    contactForm.reset();
+                    return;
+                }
+
+                // ERROR VALIDATION
+                let isError = false;
                 document.querySelectorAll('.form-row').forEach(row => row.classList.remove('error'));
 
                 inputs.forEach(input => {
-                    if (input.value.trim() === "") {
+                    if (input.id !== 'alt_email_check' && input.value.trim() === "") {
                         isError = true;
                         input.closest('.form-row').classList.add('error');
                     }
@@ -254,13 +297,16 @@
                     btn.style.setProperty('background-color', '#ff0000', 'important');
                     btn.style.setProperty('color', '#ffffff', 'important');
                     setTimeout(() => {
-                        btn.innerText = "EXECUTE_SEND";
-                        btn.style.backgroundColor = "";
-                        btn.style.color = "";
+                        if (!localStorage.getItem('email_cooldown')) {
+                            btn.innerText = "EXECUTE_SEND";
+                            btn.style.backgroundColor = "";
+                            btn.style.color = "";
+                        }
                     }, 2000);
                     return;
                 }
 
+                // PROCEED WITH SEND
                 btn.innerText = "STATUS: SENDING_VIA_RELAY...";
                 btn.style.opacity = "0.7";
                 
@@ -272,18 +318,20 @@
                 };
 
                 const serviceID = 'service_2fb81h6';
-                const adminTemplateID = 'template_h0gz7ix'; // Template that emails you
-                const autoReplyTemplateID = 'template_jqj3873'; // REPLACE THIS with your new ID
+                const adminTemplateID = 'template_h0gz7ix'; 
+                const autoReplyTemplateID = 'template_jqj3873'; 
 
-                // Trigger Email to YOU
                 emailjs.send(serviceID, adminTemplateID, templateParams)
                     .then(() => {
-                        // Trigger Auto-Reply to USER
                         emailjs.send(serviceID, autoReplyTemplateID, templateParams);
 
-                        // Show Success Overlay
+                        // SET 10 MINUTE PERSISTENT COOLDOWN
+                        const tenMinutes = 10 * 60 * 1000;
+                        const expiry = Date.now() + tenMinutes;
+                        localStorage.setItem('email_cooldown', expiry);
+
                         successOverlay.classList.add('active');
-                        btn.innerText = "COMMAND_EXECUTED_SUCCESSFULLY";
+                        btn.innerText = "COMMAND_EXECUTED";
                         btn.style.setProperty('background-color', 'var(--accent)', 'important');
                         btn.style.setProperty('color', '#000000', 'important');
                         btn.style.opacity = "1";
@@ -292,16 +340,13 @@
                         
                         setTimeout(() => {
                             successOverlay.classList.remove('active');
-                            btn.innerText = "EXECUTE_SEND";
-                            btn.style.backgroundColor = "";
-                            btn.style.color = "";
+                            disableButton(tenMinutes);
                         }, 3000);
 
                     }, (error) => {
                         console.error('FAILED...', error);
                         btn.innerText = "CRITICAL_ERROR_COMM_FAILED";
                         btn.style.setProperty('background-color', '#ff0000', 'important');
-                        btn.style.opacity = "1";
                     });
             });
         }
