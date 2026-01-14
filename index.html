@@ -4,10 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>C.MIGUEL // DEVELOPER</title>
+    <link rel="icon" type="image/png" sizes="50x50" href="resume/cm.png">
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // Replace with your Public Key from EmailJS Account Tab
+          emailjs.init("YWcE_pEySg9VCN6KU"); 
+       })();
+    </script>
 </head>
 <body>
+
+    <div id="successOverlay" class="success-overlay">
+        <div class="overlay-content">
+            <div class="glitch-text" data-text="TRANSMISSION_COMPLETE">TRANSMISSION_COMPLETE</div>
+            <p>MESSAGE_RELAYED_TO_CENTRAL_COMMAND</p>
+            <div class="loading-bar"><div class="bar-fill"></div></div>
+        </div>
+    </div>
 
     <div class="grid-overlay"></div>
 
@@ -148,34 +166,26 @@
         }
         menuBtn.addEventListener('click', toggleMenu);
 
-        // 3. FIXED Smooth Scroll Logic
+        // 3. Intelligent Smooth Scroll Logic
         document.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
-                
                 if (targetId && targetId.startsWith('#')) {
                     e.preventDefault();
                     const targetSection = document.querySelector(targetId);
-                    
                     if (targetSection) {
                         if (window.innerWidth > 900) {
-                            // DESKTOP: Scroll the internal right pane
                             const scrollContainer = document.querySelector('.right-pane');
                             const targetPos = targetSection.offsetTop;
                             scrollContainer.scrollTo({ top: targetPos, behavior: 'smooth' });
                         } else {
-                            // MOBILE: Scroll the whole page
-                            // We use getBoundingClientRect to get the absolute position on the page
-                            const offset = 80; // Space for the sticky header
+                            const offset = 80; 
                             const bodyRect = document.body.getBoundingClientRect().top;
                             const elementRect = targetSection.getBoundingClientRect().top;
                             const elementPosition = elementRect - bodyRect;
                             const offsetPosition = elementPosition - offset;
-
-                            window.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth'
-                            });
+                            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                            if (mobileMenu.classList.contains('active')) toggleMenu();
                         }
                     }
                 }
@@ -186,7 +196,6 @@
         function updateClock() {
             const statusElement = document.querySelector('.status-indicator');
             if (!statusElement) return;
-
             const now = new Date();
             const options = { 
                 timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', 
@@ -198,26 +207,102 @@
         setInterval(updateClock, 1000);
         updateClock(); 
 
-        // 5. Enhanced Form Submission
+        // 5. Terminal Typewriter Effect for Hero
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = ''; 
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        window.addEventListener('load', () => {
+            const heroTitle = document.querySelector('h1');
+            if (heroTitle) {
+                typeWriter(heroTitle, "CARLOS MIGUEL", 120); 
+            }
+        });
+
+        // 6. Final Form Submission with Dual EmailJS Templates
         const contactForm = document.querySelector('.terminal-form');
+        const successOverlay = document.getElementById('successOverlay');
+
         if (contactForm) {
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const btn = contactForm.querySelector('.submit-btn');
-                btn.innerText = "STATUS: SENDING...";
                 
-                setTimeout(() => {
-                    btn.innerText = "COMMAND_EXECUTED_SUCCESSFULLY";
-                    btn.style.background = "var(--accent)";
-                    btn.style.color = "#000";
-                    contactForm.reset();
-                    
+                const btn = contactForm.querySelector('.submit-btn');
+                const inputs = contactForm.querySelectorAll('input, textarea');
+                let isError = false;
+
+                document.querySelectorAll('.form-row').forEach(row => row.classList.remove('error'));
+
+                inputs.forEach(input => {
+                    if (input.value.trim() === "") {
+                        isError = true;
+                        input.closest('.form-row').classList.add('error');
+                    }
+                });
+
+                if (isError) {
+                    btn.innerText = "ERROR: DATA_MISSING";
+                    btn.style.setProperty('background-color', '#ff0000', 'important');
+                    btn.style.setProperty('color', '#ffffff', 'important');
                     setTimeout(() => {
                         btn.innerText = "EXECUTE_SEND";
-                        btn.style.background = "";
+                        btn.style.backgroundColor = "";
                         btn.style.color = "";
-                    }, 3000);
-                }, 1000);
+                    }, 2000);
+                    return;
+                }
+
+                btn.innerText = "STATUS: SENDING_VIA_RELAY...";
+                btn.style.opacity = "0.7";
+                
+                const templateParams = {
+                    from_name: inputs[0].value,
+                    reply_to: inputs[1].value,
+                    message: inputs[2].value,
+                    date: new Date().toLocaleString()
+                };
+
+                const serviceID = 'service_2fb81h6';
+                const adminTemplateID = 'template_h0gz7ix'; // Template that emails you
+                const autoReplyTemplateID = 'template_jqj3873'; // REPLACE THIS with your new ID
+
+                // Trigger Email to YOU
+                emailjs.send(serviceID, adminTemplateID, templateParams)
+                    .then(() => {
+                        // Trigger Auto-Reply to USER
+                        emailjs.send(serviceID, autoReplyTemplateID, templateParams);
+
+                        // Show Success Overlay
+                        successOverlay.classList.add('active');
+                        btn.innerText = "COMMAND_EXECUTED_SUCCESSFULLY";
+                        btn.style.setProperty('background-color', 'var(--accent)', 'important');
+                        btn.style.setProperty('color', '#000000', 'important');
+                        btn.style.opacity = "1";
+                        
+                        contactForm.reset();
+                        
+                        setTimeout(() => {
+                            successOverlay.classList.remove('active');
+                            btn.innerText = "EXECUTE_SEND";
+                            btn.style.backgroundColor = "";
+                            btn.style.color = "";
+                        }, 3000);
+
+                    }, (error) => {
+                        console.error('FAILED...', error);
+                        btn.innerText = "CRITICAL_ERROR_COMM_FAILED";
+                        btn.style.setProperty('background-color', '#ff0000', 'important');
+                        btn.style.opacity = "1";
+                    });
             });
         }
     </script>
