@@ -128,18 +128,19 @@
                 <div id="contact" class="section-container">
                     <div class="block-header">03 // ESTABLISH_COMM</div>
                     <form class="terminal-form">
+                        <input type="text" id="alt_email_check" style="display:none !important" tabindex="-1" autocomplete="off">
+
                         <div class="form-row">
-                            <label>> NAME:</label>
-                            <input type="text" spellcheck="false" placeholder="REQUIRED">
-                            <input type="text" id="alt_email_check" style="display:none !important" tabindex="-1" autocomplete="off">
+                            <label>NAME:</label>
+                            <input type="text" name="user_name" required>
                         </div>
                         <div class="form-row">
-                            <label>> EMAIL:</label>
-                            <input type="email" spellcheck="false" placeholder="REQUIRED">
+                            <label>EMAIL:</label>
+                            <input type="email" name="user_email" required>
                         </div>
                         <div class="form-row">
-                            <label>> MSG:</label>
-                            <textarea rows="3" placeholder="ENTER MESSAGE..."></textarea>
+                            <label>MESSAGE:</label>
+                            <textarea name="message" rows="4" required></textarea>
                         </div>
                         <button type="submit" class="submit-btn">EXECUTE_SEND</button>
                     </form>
@@ -208,7 +209,7 @@
         setInterval(updateClock, 1000);
         updateClock(); 
 
-        // 5. Terminal Typewriter Effect for Hero
+        // 5. Terminal Typewriter Effect
         function typeWriter(element, text, speed = 100) {
             let i = 0;
             element.innerHTML = ''; 
@@ -229,14 +230,13 @@
             }
         });
 
-        // 6. Final Form Submission with Spam/Bot Protection & Persistence
+        // 6. Final Form Submission (Fixed Variable Mapping & 10m Lock)
         const contactForm = document.querySelector('.terminal-form');
         const successOverlay = document.getElementById('successOverlay');
 
         if (contactForm) {
             const btn = contactForm.querySelector('.submit-btn');
 
-            // Function to disable button and show remaining time
             function disableButton(ms) {
                 const mins = Math.ceil(ms / 60000);
                 btn.innerText = `SYSTEM_LOCKED: ${mins}m_REMAINING`;
@@ -257,10 +257,9 @@
                         btn.style.cursor = "pointer";
                         localStorage.removeItem('email_cooldown');
                     }
-                }, 10000); // Check every 10 seconds
+                }, 10000);
             }
 
-            // Check for existing cooldown on page load
             const savedCooldown = localStorage.getItem('email_cooldown');
             if (savedCooldown) {
                 const timeLeft = savedCooldown - Date.now();
@@ -270,50 +269,32 @@
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                const inputs = contactForm.querySelectorAll('input, textarea');
                 const honeypot = document.getElementById('alt_email_check');
-
-                // BOT CHECK: If honeypot is filled, silent fail
                 if (honeypot && honeypot.value !== "") {
-                    console.warn("BOT_DETECTED: TRANSMISSION_VOIDED");
                     successOverlay.classList.add('active');
                     contactForm.reset();
                     return;
                 }
 
-                // ERROR VALIDATION
-                let isError = false;
-                document.querySelectorAll('.form-row').forEach(row => row.classList.remove('error'));
+                // FIND INPUTS BY NAME INSTEAD OF INDEX
+                const nameInput = contactForm.querySelector('[name="user_name"]');
+                const emailInput = contactForm.querySelector('[name="user_email"]');
+                const messageInput = contactForm.querySelector('[name="message"]');
 
-                inputs.forEach(input => {
-                    if (input.id !== 'alt_email_check' && input.value.trim() === "") {
-                        isError = true;
-                        input.closest('.form-row').classList.add('error');
-                    }
-                });
-
-                if (isError) {
+                if (!nameInput.value || !emailInput.value || !messageInput.value) {
                     btn.innerText = "ERROR: DATA_MISSING";
-                    btn.style.setProperty('background-color', '#ff0000', 'important');
-                    btn.style.setProperty('color', '#ffffff', 'important');
-                    setTimeout(() => {
-                        if (!localStorage.getItem('email_cooldown')) {
-                            btn.innerText = "EXECUTE_SEND";
-                            btn.style.backgroundColor = "";
-                            btn.style.color = "";
-                        }
-                    }, 2000);
+                    setTimeout(() => { btn.innerText = "EXECUTE_SEND"; }, 2000);
                     return;
                 }
 
-                // PROCEED WITH SEND
                 btn.innerText = "STATUS: SENDING_VIA_RELAY...";
                 btn.style.opacity = "0.7";
                 
+                // These keys must match the {{variables}} in your EmailJS templates
                 const templateParams = {
-                    from_name: inputs[0].value,
-                    reply_to: inputs[1].value,
-                    message: inputs[2].value,
+                    from_name: nameInput.value,
+                    reply_to: emailInput.value,
+                    message: messageInput.value,
                     date: new Date().toLocaleString()
                 };
 
@@ -321,21 +302,17 @@
                 const adminTemplateID = 'template_h0gz7ix'; 
                 const autoReplyTemplateID = 'template_jqj3873'; 
 
+                // Sending Admin Notification
                 emailjs.send(serviceID, adminTemplateID, templateParams)
                     .then(() => {
+                        // Sending Auto-Reply to User
                         emailjs.send(serviceID, autoReplyTemplateID, templateParams);
 
-                        // SET 10 MINUTE PERSISTENT COOLDOWN
                         const tenMinutes = 10 * 60 * 1000;
-                        const expiry = Date.now() + tenMinutes;
-                        localStorage.setItem('email_cooldown', expiry);
+                        localStorage.setItem('email_cooldown', Date.now() + tenMinutes);
 
                         successOverlay.classList.add('active');
                         btn.innerText = "COMMAND_EXECUTED";
-                        btn.style.setProperty('background-color', 'var(--accent)', 'important');
-                        btn.style.setProperty('color', '#000000', 'important');
-                        btn.style.opacity = "1";
-                        
                         contactForm.reset();
                         
                         setTimeout(() => {
@@ -345,8 +322,8 @@
 
                     }, (error) => {
                         console.error('FAILED...', error);
-                        btn.innerText = "CRITICAL_ERROR_COMM_FAILED";
-                        btn.style.setProperty('background-color', '#ff0000', 'important');
+                        btn.innerText = "CRITICAL_ERROR";
+                        btn.style.opacity = "1";
                     });
             });
         }
