@@ -324,3 +324,13 @@ h1::after {
 
     .section-container { margin-bottom: 4rem; }
 }
+
+h1::after {
+    content: "|";
+    color: var(--accent);
+    animation: blinkCursor 0.8s step-end infinite;
+}
+@keyframes blinkCursor {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+}
