@@ -17,7 +17,8 @@ body {
     background: var(--bg);
     color: var(--fg);
     font-family: 'Space Mono', monospace;
-    overflow: hidden; /* Desktop default */
+    overflow-x: hidden;
+    overflow-y: auto; /* Changed for better mobile scrolling */
     -webkit-font-smoothing: antialiased;
 }
 
@@ -134,13 +135,26 @@ body {
     padding: 1.5rem 5rem 2rem; 
 }
 
-/* Hero Typography */
+/* Hero Typography & Cursor */
 h1 { 
     font-size: clamp(4rem, 8vw, 10rem); 
     line-height: 0.85; 
     margin-bottom: 2.5rem; 
     letter-spacing: -0.05em; 
     font-weight: 900;
+    display: inline-block; /* Required for cursor to stick to end of text */
+}
+
+h1::after {
+    content: "|";
+    color: var(--accent);
+    animation: blinkCursor 0.8s step-end infinite;
+    margin-left: 5px;
+}
+
+@keyframes blinkCursor {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 .version { font-size: 0.7rem; color: #555; letter-spacing: 4px; margin-bottom: 1rem; display: block; font-weight: 700; }
@@ -172,7 +186,7 @@ h1 {
 .cv-btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); border: 1px solid var(--fg); padding: 1rem 2rem; font-size: 0.8rem; transition: 0.3s; }
 .cv-btn:hover { background: var(--fg); color: var(--bg); }
 
-/* Form Styling & Validation */
+/* Form Styling */
 .form-row { display: flex; gap: 1.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; transition: 0.3s; }
 .form-row label { font-size: 0.8rem; color: #555; white-space: nowrap; }
 .form-row input, .form-row textarea { 
@@ -183,7 +197,6 @@ h1 {
     border-radius: 0;
 }
 
-/* Vibration Animation */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
@@ -193,7 +206,7 @@ h1 {
 .form-row.error { border-bottom: 1px solid #ff0000; animation: shake 0.2s ease-in-out 0s 2; }
 .form-row.error label { color: #ff0000; }
 
-/* Submit Button & iPhone Overrides */
+/* Submit Button & iPhone Fixes */
 .submit-btn { 
     width: 100%; padding: 1.5rem; border: none; 
     font-family: inherit; font-weight: 700; cursor: pointer; transition: 0.3s;
@@ -207,34 +220,29 @@ h1 {
 
 .submit-btn:hover { background-color: var(--accent) !important; color: #000 !important; }
 
-/* SUCCESS OVERLAY (MOBILE FRIENDLY) */
+/* Success Overlay */
 .success-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.98); /* Slightly darker for mobile clarity */
-    z-index: 10000; /* Ensure it stays above everything */
+    background: rgba(0, 0, 0, 0.98);
+    z-index: 10000;
     display: none; 
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-family: 'Space Mono', monospace;
-    padding: 1.5rem; /* Prevents text hitting edges on small screens */
+    padding: 1.5rem;
 }
 
 .success-overlay.active { display: flex; }
 
-.overlay-content {
-    width: 100%;
-    max-width: 400px;
-}
+.overlay-content { width: 100%; max-width: 400px; }
 
 .glitch-text {
-    font-size: clamp(1.2rem, 6vw, 2rem); /* Dynamic font size for mobile */
+    font-size: clamp(1.2rem, 6vw, 2rem);
     font-weight: 700;
     color: var(--accent);
     letter-spacing: 3px;
     margin-bottom: 1rem;
-    position: relative;
     text-transform: uppercase;
 }
 
@@ -242,8 +250,6 @@ h1 {
     font-size: clamp(0.7rem, 3vw, 0.9rem);
     color: var(--fg);
     opacity: 0.8;
-    letter-spacing: 1px;
-    word-break: break-all;
 }
 
 .loading-bar {
@@ -252,7 +258,6 @@ h1 {
     height: 2px;
     background: #222;
     margin: 25px auto;
-    position: relative;
     overflow: hidden;
 }
 
@@ -260,30 +265,12 @@ h1 {
     width: 0%;
     height: 100%;
     background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
     animation: fillProgress 2s ease-in-out forwards;
-
-.submit-btn { 
-    width: 100%; 
-    padding: 1.5rem; 
-    background: var(--fg); /* This ensures it is white (foreground) */
-    color: var(--bg);      /* This ensures text is black (background) */
-    border: none; 
-    font-family: inherit; 
-    font-weight: 700; 
-    cursor: pointer; 
-    transition: 0.3s;
-    
-    /* --- IPHONE FIXES --- */
-    -webkit-appearance: none; /* Removes iOS default button styling */
-    border-radius: 0;         /* Removes iOS default rounded corners */
-    opacity: 1;               /* Ensures it's not washed out */
 }
 
-.submit-btn:hover { 
-    background: var(--accent); 
-    color: #000; 
-
+@keyframes fillProgress {
+    0% { width: 0%; }
+    100% { width: 100%; }
 }
 
 /* Footer */
@@ -304,33 +291,5 @@ h1 {
     .scroll-content { padding: 2rem 1.5rem; }
     .project-row { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .form-row { flex-direction: column; gap: 0.5rem; }
-
-}
-
-@keyframes fillProgress {
-    0% { width: 0%; }
-    100% { width: 100%; }
-}
-
-h1::after {
-    content: "|";
-    color: var(--accent);
-    animation: blinkCursor 0.8s step-end infinite;
-}
-@keyframes blinkCursor {
-    from, to { opacity: 1; }
-    50% { opacity: 0; }
-}
-
     .section-container { margin-bottom: 4rem; }
-}
-
-h1::after {
-    content: "|";
-    color: var(--accent);
-    animation: blinkCursor 0.8s step-end infinite;
-}
-@keyframes blinkCursor {
-    from, to { opacity: 1; }
-    50% { opacity: 0; }
 }
