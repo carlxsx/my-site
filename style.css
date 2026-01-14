@@ -241,10 +241,26 @@ h1 {
 }
 
 .submit-btn { 
-    width: 100%; padding: 1.5rem; background: var(--fg); border: none; 
-    font-family: inherit; font-weight: 700; cursor: pointer; transition: 0.3s;
+    width: 100%; 
+    padding: 1.5rem; 
+    background: var(--fg); /* This ensures it is white (foreground) */
+    color: var(--bg);      /* This ensures text is black (background) */
+    border: none; 
+    font-family: inherit; 
+    font-weight: 700; 
+    cursor: pointer; 
+    transition: 0.3s;
+    
+    /* --- IPHONE FIXES --- */
+    -webkit-appearance: none; /* Removes iOS default button styling */
+    border-radius: 0;         /* Removes iOS default rounded corners */
+    opacity: 1;               /* Ensures it's not washed out */
 }
-.submit-btn:hover { background: var(--accent); color: #000; }
+
+.submit-btn:hover { 
+    background: var(--accent); 
+    color: #000; 
+}
 
 /* Footer */
 .bottom-footer { margin-top: 6rem; padding-bottom: 3rem; }
