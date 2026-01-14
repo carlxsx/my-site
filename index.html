@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>C.MIGUEL // DEVELOPER</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -20,7 +20,15 @@
             <a href="#about">Profile</a>
             <a href="#contact">Connect</a>
         </div>
+        <button class="menu-toggle" id="menuBtn">Menu</button>
     </nav>
+
+    <div class="mobile-overlay" id="mobileMenu">
+        <a href="#work" onclick="toggleMenu()">[ 01_WORK ]</a>
+        <a href="#about" onclick="toggleMenu()">[ 02_PROFILE ]</a>
+        <a href="#contact" onclick="toggleMenu()">[ 03_CONNECT ]</a>
+        <button class="menu-toggle" onclick="toggleMenu()" style="margin-top: 2rem;">CLOSE_TERMINAL</button>
+    </div>
 
     <main class="main-layout">
         <section class="left-pane">
@@ -121,7 +129,7 @@
                 <footer class="bottom-footer">
                     <div class="footer-line"></div>
                     <p>© 2026 // CARLOS MIGUEL CARIÑO // ALL_RIGHTS_RESERVED</p>
-                </div>
+                </footer>
             </div>
         </section>
     </main>
@@ -130,67 +138,78 @@
         // 1. Initialize Lucide Icons
         lucide.createIcons();
 
-        // 2. Premium Smooth Scroll (Updated for Minimal Gap)
-        document.querySelectorAll('.nav-links a').forEach(link => {
+        // 2. Mobile Menu Toggle Logic
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('active');
+            menuBtn.innerText = mobileMenu.classList.contains('active') ? 'Close' : 'Menu';
+        }
+        menuBtn.addEventListener('click', toggleMenu);
+
+        // 3. FIXED Smooth Scroll Logic
+        document.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
                 
-                if (targetId.startsWith('#')) {
+                if (targetId && targetId.startsWith('#')) {
                     e.preventDefault();
-                    
                     const targetSection = document.querySelector(targetId);
-                    const scrollContainer = document.querySelector('.right-pane');
+                    
+                    if (targetSection) {
+                        if (window.innerWidth > 900) {
+                            // DESKTOP: Scroll the internal right pane
+                            const scrollContainer = document.querySelector('.right-pane');
+                            const targetPos = targetSection.offsetTop;
+                            scrollContainer.scrollTo({ top: targetPos, behavior: 'smooth' });
+                        } else {
+                            // MOBILE: Scroll the whole page
+                            // We use getBoundingClientRect to get the absolute position on the page
+                            const offset = 80; // Space for the sticky header
+                            const bodyRect = document.body.getBoundingClientRect().top;
+                            const elementRect = targetSection.getBoundingClientRect().top;
+                            const elementPosition = elementRect - bodyRect;
+                            const offsetPosition = elementPosition - offset;
 
-                    if (targetSection && scrollContainer) {
-                        // Offset set to 0 for a tighter, more immediate alignment
-                        const targetPosition = targetSection.offsetTop;
-
-                        scrollContainer.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
                     }
                 }
             });
         });
 
-        // 3. Live System Clock (Manila Time)
+        // 4. Live System Clock (Manila Time)
         function updateClock() {
             const statusElement = document.querySelector('.status-indicator');
             if (!statusElement) return;
 
             const now = new Date();
             const options = { 
-                timeZone: 'Asia/Manila', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit', 
-                hour12: false 
+                timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', 
+                second: '2-digit', hour12: false 
             };
             const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
-            
             statusElement.innerHTML = `<span class="blink"></span> SYSTEM_ACTIVE // ${timeString} // 2026`;
         }
-
         setInterval(updateClock, 1000);
         updateClock(); 
 
-        // 4. Enhanced Form Submission
+        // 5. Enhanced Form Submission
         const contactForm = document.querySelector('.terminal-form');
         if (contactForm) {
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const btn = contactForm.querySelector('.submit-btn');
-                
-                // Visual feedback for "Executing" command
                 btn.innerText = "STATUS: SENDING...";
-                btn.style.opacity = "0.7";
                 
                 setTimeout(() => {
                     btn.innerText = "COMMAND_EXECUTED_SUCCESSFULLY";
                     btn.style.background = "var(--accent)";
                     btn.style.color = "#000";
-                    btn.style.opacity = "1";
                     contactForm.reset();
                     
                     setTimeout(() => {

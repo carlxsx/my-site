@@ -4,7 +4,7 @@
     --bg: #000000;
     --fg: #ffffff;
     --border: #222222;
-    --accent: #00ff00; /* Subtle green for technical feel */
+    --accent: #00ff00; 
 }
 
 * { 
@@ -17,7 +17,7 @@ body {
     background: var(--bg);
     color: var(--fg);
     font-family: 'Space Mono', monospace;
-    overflow: hidden; /* Prevent body scroll to enable pane scroll */
+    overflow: hidden; /* Desktop default */
 }
 
 /* Background Grid */
@@ -43,7 +43,7 @@ body {
     backdrop-filter: blur(5px);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .status-indicator { 
@@ -76,6 +76,36 @@ body {
 
 .nav-links a:hover { color: var(--accent); }
 
+/* Menu Toggles */
+.menu-toggle {
+    display: none; /* Desktop hidden */
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 6px 15px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.mobile-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-overlay.active { transform: translateY(0); }
+.mobile-overlay a { font-size: 1.8rem; font-weight: 700; color: var(--fg); text-decoration: none; margin: 1.2rem 0; }
+.mobile-overlay a:hover { color: var(--accent); }
+
 /* Main Layout */
 .main-layout { 
     display: flex; 
@@ -97,12 +127,11 @@ body {
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
     scroll-behavior: smooth;
-    /* Add this to help the browser calculate positions better */
     position: relative; 
 }
 
 .scroll-content { 
-    padding: 1.5rem 5rem 2rem; /* Tightened top padding from 6rem to 1.5rem */
+    padding: 1.5rem 5rem 2rem; 
 }
 
 /* Hero Typography */
@@ -139,7 +168,6 @@ h1 {
     font-weight: 400;
 }
 
-/* Icon Spacing */
 .social-icons { display: flex; gap: 1.5rem; }
 .social-icons a { color: var(--fg); transition: 0.3s; opacity: 0.6; }
 .social-icons a:hover { opacity: 1; transform: translateY(-3px); color: var(--accent); }
@@ -148,14 +176,13 @@ h1 {
 .section-container { 
     padding-top: 1rem; 
     margin-bottom: 6rem;
-    /* ADD THIS LINE: It creates a buffer so the header isn't hidden or skipped */
-    scroll-margin-top: 2rem; 
+    scroll-margin-top: 5rem; 
 }
 
 .block-header { 
     border-bottom: 1px solid var(--border); 
     padding-bottom: 0.8rem; 
-    margin-bottom: 1.5rem; /* Reduced from 3rem */
+    margin-bottom: 1.5rem; 
     font-size: 0.75rem; 
     color: #555; 
     letter-spacing: 2px; 
@@ -166,7 +193,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.8rem 0; /* Reduced from 2.5rem to lessen gaps */
+    padding: 1.8rem 0; 
     border-bottom: 1px solid var(--border);
     text-decoration: none;
     color: var(--fg);
@@ -219,17 +246,36 @@ h1 {
 }
 .submit-btn:hover { background: var(--accent); color: #000; }
 
-/* Footer Fix */
+/* Footer */
 .bottom-footer { margin-top: 6rem; padding-bottom: 3rem; }
 .footer-line { height: 1px; background: var(--border); margin-bottom: 2rem; }
 .bottom-footer p { font-size: 0.7rem; color: #444; text-align: center; letter-spacing: 2px; }
 
-/* Responsive */
-@media (max-width: 1100px) {
-    .main-layout { flex-direction: column; overflow-y: auto; height: auto; }
-    .left-pane { border-right: none; border-bottom: 1px solid var(--border); padding: 5rem 2rem; }
-    .right-pane { overflow: visible; }
-    .scroll-content { padding: 3rem 2rem; }
-    h1 { font-size: 15vw; }
+/* --- RESPONSIVE MOBILE FIXES --- */
+@media (max-width: 900px) {
+    body { overflow-y: auto; }
+    .top-bar { padding: 0 1.5rem; height: 60px; }
+    .nav-links { display: none; }
+    .menu-toggle { display: block; } /* Show Burger */
+    
+    .main-layout { flex-direction: column; height: auto; }
+    
+    .left-pane { 
+        flex: none; width: 100%; 
+        padding: 4rem 1.5rem 2rem; 
+        border-right: none; border-bottom: 1px solid var(--border);
+    }
+
+    h1 { font-size: 18vw; }
+    
+    .right-pane { flex: none; width: 100%; overflow: visible; }
+    .scroll-content { padding: 2rem 1.5rem; }
+
+    .project-row { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .p-left { gap: 1rem; }
+    .p-name { font-size: 1.5rem; width: 100%; }
+    .project-row i { display: none; }
+
+    .form-row { flex-direction: column; gap: 0.5rem; }
+    .section-container { margin-bottom: 4rem; }
 }
