@@ -1,74 +1,65 @@
-📟 Cyber-Terminal Portfolio v1.0
-A high-performance, minimalist portfolio with a "Terminal/Hacker" aesthetic. Built with a focus on clean typography, CSS grid layouts, and a secure communication relay via EmailJS.
+Project Documentation: Cyber-Terminal Portfolio
+Overview
+A minimalist, high-performance developer portfolio featuring a monochromatic terminal aesthetic. The project focuses on clean typography, responsive grid layouts, and a secure communication relay system.
 
-🚀 Features
-Cyberpunk UI: Custom CSS grid background with a monochromatic high-contrast theme.
+Technical Architecture
+Frontend Composition
+Typography: Space Mono (Google Fonts) for a monospaced, data-driven feel.
 
-Dual-Template Relay: Automated logic that sends an admin notification to you and an instant receipt to the sender.
+Layout: CSS Grid and Flexbox for a split-pane interface that adapts to mobile devices via media query overrides.
 
-Anti-Bot Protection: Implementation of a "Honeypot" trap to prevent automated spam submissions from consuming your quota.
+Icons: Lucide Icons library for lightweight, vector-based interface elements.
 
-Responsive Architecture: Fully fluid layout that shifts from a split-pane desktop view to a stacked mobile interface.
+Communication System (EmailJS)
+The contact form utilizes a dual-relay logic to handle incoming inquiries.
 
-🛠 Tech Stack
-Frontend: HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6)
+Admin Notification: Alerts the site owner of a new submission, including sender details and message content.
 
-Icons: Lucide Icons
+Auto-Reply Receipt: Automatically transmits a confirmation to the sender to verify receipt of their data.
 
-Email Engine: EmailJS
+Configuration Requirements
+To maintain security, the API keys and Template IDs in the source code have been replaced with placeholders. To enable the contact form, you must configure your own EmailJS environment.
 
-📧 EmailJS Setup (Manual Configuration)
-To get the contact form working, you must create your own EmailJS account and templates. Do not use the project's original keys.
+1. Template Variables
+Ensure your EmailJS templates are configured with the following variable keys:
 
-1. The Templates
-You need to create two templates in your EmailJS dashboard:
+{{from_name}}: The name of the sender.
 
-Template A: Admin Notification
+{{reply_to}}: The sender's email address (used for the "Reply-To" header).
 
-Recipient: Your own email.
+{{message}}: The body text of the inquiry.
 
-Reply-To Field: {{reply_to}}
+{{date}}: Timestamp of the transmission.
 
-Body: Includes {{from_name}}, {{reply_to}}, and {{message}}.
-
-Template B: User Auto-Reply
-
-To Email Field: {{reply_to}}
-
-Body: A confirmation message thanking them for reaching out.
-
-2. The Keys
-In script.js and index.html, fill in your own credentials:
+2. Implementation
+Replace the following placeholders in index.html and script.js:
 
 JavaScript
 
-// In index.html
+/* index.html */
 emailjs.init("YOUR_PUBLIC_KEY");
 
-// In script.js
-const serviceID = "YOUR_SERVICE_ID";
-const adminTemplateID = "YOUR_ADMIN_TEMPLATE_ID";
-const autoReplyTemplateID = "YOUR_AUTOREPLY_TEMPLATE_ID";
-🛡 Security & Anti-Spam
-This project uses a Honeypot technique. Any input detected in the hidden field _honey will cause the script to terminate the send request immediately. This ensures that only human users can trigger the EmailJS API.
+/* script.js */
+const SERVICE_ID = "YOUR_SERVICE_ID";
+const ADMIN_TEMPLATE_ID = "YOUR_ADMIN_TEMPLATE_ID";
+const AUTO_REPLY_TEMPLATE_ID = "YOUR_AUTOREPLY_TEMPLATE_ID";
+Security Protocols
+Bot Mitigation
+The form implements a Honeypot field. This hidden input is invisible to human users but is typically filled by automated spam bots. The JavaScript validation logic checks this field; if it contains any data, the submission is silently rejected to preserve the EmailJS monthly request quota.
 
-JavaScript
+Attribute-Based Selection
+The JavaScript utilizes name-attribute selectors rather than index-based selection. This ensures the script remains stable even if additional HTML elements are added or the form structure is reorganized.
 
-if (formData.get('_honey')) {
-    console.warn("BOT_DETECTED: TERMINATING_TRANSMISSION");
-    return;
-}
-📂 Installation
-Clone the repository:
+Deployment
+This project is optimized for deployment via GitHub Pages.
 
-Bash
+Push the repository to GitHub.
 
-git clone https://github.com/carlxsx/your-repo-name.git
-Open index.html in any modern browser.
+Navigate to Settings > Pages.
 
-Replace the EmailJS placeholders with your own keys.
+Select the main branch as the deployment source.
 
-👤 Author
-Carlos Miguel
+Author
+@carlxsx
 
-Status: [ OPEN_FOR_PROJECTS ]
+Availability: Professional Inquiries Welcome
