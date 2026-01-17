@@ -66,57 +66,20 @@
             <div class="scroll-content">
                 
                 <div id="work" class="section-container">
-                    <div class="block-header reveal-text" data-value="01 // SELECTED_PROJECTS">01 // SELECTED_PROJECTS</div>
-                    <div class="project-list">
+                    <div class="block-header reveal-text" data-value="01 // LIVE_REPOSITORIES">01 // LIVE_REPOSITORIES</div>
+                    
+                    <div class="project-list" id="githubFeed">
+                        <div class="cli-line" style="margin-bottom: 20px; color: #666;">>> INITIATING_UPLINK: api.github.com/users/carlxsx...</div>
                         
-                        <a href="https://github.com/carlxsx/Esmile.git" target="_blank" rel="noopener noreferrer" class="project-row">
+                        <a href="https://github.com/carlxsx" target="_blank" rel="noopener noreferrer" class="project-row">
                             <div class="p-left">
                                 <div class="p-title-group">
                                     <span class="p-num">01</span>
-                                    <span class="p-name">ESMILE</span>
-                                    <span class="p-tag">DENTAL_SYSTEM</span>
+                                    <span class="p-name">CONNECTING...</span>
                                 </div>
-                                <span class="p-status">[ APPOINTMENT_LOGIC + CLINIC_MGMT ]</span>
+                                <span class="p-status">[ WAITING_FOR_RESPONSE ]</span>
                             </div>
-                            <i data-lucide="external-link"></i>
                         </a>
-
-                        <a href="https://github.com/carlxsx/iWash.git" target="_blank" rel="noopener noreferrer" class="project-row">
-                            <div class="p-left">
-                                <div class="p-title-group">
-                                    <span class="p-num">02</span>
-                                    <span class="p-name">IWASH</span>
-                                    <span class="p-tag">SERVICE_SCHEDULER</span>
-                                </div>
-                                <span class="p-status">[ AUTO_WASH + ALL_MAINTENANCE_MODS ]</span>
-                            </div>
-                            <i data-lucide="external-link"></i>
-                        </a>
-
-                        <a href="https://github.com/carlxsx/SmartFaq.git" target="_blank" rel="noopener noreferrer" class="project-row">
-                            <div class="p-left">
-                                <div class="p-title-group">
-                                    <span class="p-num">03</span>
-                                    <span class="p-name">SMART FAQ</span>
-                                    <span class="p-tag">ELECTRON_JS</span>
-                                </div>
-                                <span class="p-status">[ CROSS_PLATFORM_DESKTOP_UI ]</span>
-                            </div>
-                            <i data-lucide="external-link"></i>
-                        </a>
-
-                        <a href="https://github.com/carlxsx/Facundo.git" target="_blank" rel="noopener noreferrer" class="project-row">
-                            <div class="p-left">
-                                <div class="p-title-group">
-                                    <span class="p-num">04</span>
-                                    <span class="p-name">FACUNDO</span>
-                                    <span class="p-tag">AUTOMOTIVE_COMMERCE</span>
-                                </div>
-                                <span class="p-status">[ STOCK_MGMT + CRM ]</span>
-                            </div>
-                            <i data-lucide="external-link"></i>
-                        </a>
-
                     </div>
                 </div>
 
@@ -186,83 +149,121 @@
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- CORE CONFIG ---
+            const GITHUB_USERNAME = "carlxsx";
             const EMAILJS_PUBLIC_KEY = "YWcE_pEySg9VCN6KU"; 
             const EMAILJS_SERVICE_ID = "service_2fb81h6";
             const EMAILJS_ADMIN_TEMPLATE = "template_h0gz7ix";
             const EMAILJS_AUTOREPLY_TEMPLATE = "template_jqj3873";
             const LOCKOUT_TIME_MS = 10 * 60 * 1000;
 
-            // --- 1. OPTION H: DECRYPT TEXT REVEAL ---
+            // --- 1. OPTION F: LIVE GITHUB FEED ---
+            async function initGitHubFeed() {
+                const container = document.getElementById('githubFeed');
+                
+                try {
+                    // Fetch repos sorted by latest update
+                    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&direction=desc&per_page=4`);
+                    
+                    if (!response.ok) throw new Error("GitHub API Error");
+                    
+                    const repos = await response.json();
+                    
+                    // Clear loading/fallback content
+                    container.innerHTML = '';
+
+                    repos.forEach((repo, index) => {
+                        // Create Project Row
+                        const row = document.createElement('a');
+                        row.href = repo.html_url;
+                        row.target = "_blank";
+                        row.rel = "noopener noreferrer";
+                        row.className = "project-row";
+                        
+                        // Format description (truncate if too long)
+                        let desc = repo.description || "[ NO_DESCRIPTION_AVAILABLE ]";
+                        if (desc.length > 50) desc = desc.substring(0, 50) + "...";
+                        
+                        // Format Language
+                        const lang = repo.language ? repo.language.toUpperCase() : "RAW_CODE";
+
+                        row.innerHTML = `
+                            <div class="p-left">
+                                <div class="p-title-group">
+                                    <span class="p-num">0${index + 1}</span>
+                                    <span class="p-name">${repo.name.toUpperCase()}</span>
+                                    <span class="p-tag">${lang}</span>
+                                </div>
+                                <span class="p-status">[ ${desc.toUpperCase()} ] <span style="color: gold; margin-left:10px;">★ ${repo.stargazers_count}</span></span>
+                            </div>
+                            <i data-lucide="external-link"></i>
+                        `;
+
+                        container.appendChild(row);
+                    });
+
+                    // IMPORTANT: Re-initialize 3D Tilt and Icons on new elements
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    initTiltEffect(); 
+
+                } catch (error) {
+                    console.error("GitHub Feed Failed:", error);
+                    // If failed, we keep the fallback HTML or show an error
+                    const statusLine = container.querySelector('.cli-line');
+                    if (statusLine) statusLine.innerHTML = ">> UPLINK_FAILED. DISPLAYING_OFFLINE_CACHE.";
+                }
+            }
+
+            // --- 2. OPTION H: DECRYPT TEXT REVEAL ---
             function initDecryptEffect() {
                 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
-                
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             let iterations = 0;
                             const target = entry.target;
                             const originalText = target.dataset.value || target.innerText;
-                            
-                            // Prevent infinite loops if already decrypted
                             if (target.classList.contains('decrypted')) return;
-
                             const interval = setInterval(() => {
-                                target.innerText = originalText
-                                    .split("")
-                                    .map((letter, index) => {
-                                        if (index < iterations) return originalText[index];
-                                        return letters[Math.floor(Math.random() * letters.length)];
-                                    })
-                                    .join("");
-
+                                target.innerText = originalText.split("").map((letter, index) => {
+                                    if (index < iterations) return originalText[index];
+                                    return letters[Math.floor(Math.random() * letters.length)];
+                                }).join("");
                                 if (iterations >= originalText.length) {
                                     clearInterval(interval);
                                     target.classList.add('decrypted');
-                                    target.innerText = originalText; // Ensure exact match at end
+                                    target.innerText = originalText; 
                                 }
-
-                                iterations += 1 / 2; // Speed of reveal (higher denominator = slower)
+                                iterations += 1 / 2; 
                             }, 30);
                         }
                     });
                 }, { threshold: 0.1 });
-
                 document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
             }
 
-            // --- 2. OPTION I: 3D TILT EFFECT ---
+            // --- 3. OPTION I: 3D TILT EFFECT ---
             function initTiltEffect() {
                 const cards = document.querySelectorAll('.project-row');
-
                 cards.forEach(card => {
-                    // Create glare element dynamically
+                    // Avoid duplicate glares if re-initialized
+                    if(card.querySelector('.glare')) return;
+
                     const glare = document.createElement('div');
                     glare.className = 'glare';
                     card.appendChild(glare);
-
                     card.addEventListener('mousemove', (e) => {
                         const rect = card.getBoundingClientRect();
-                        // Calculate mouse position relative to card center
                         const x = e.clientX - rect.left;
                         const y = e.clientY - rect.top;
-                        
                         const centerX = rect.width / 2;
                         const centerY = rect.height / 2;
-
-                        // Rotate Values (Limited to 5 degrees for subtlety)
                         const rotateX = ((y - centerY) / centerY) * -5; 
                         const rotateY = ((x - centerX) / centerX) * 5;
-
-                        // Apply 3D Transform
                         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-
-                        // Move Glare
                         const glareX = (x / rect.width) * 100;
                         const glareY = (y / rect.height) * 100;
                         glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 80%)`;
                     });
-
-                    // Reset on mouse leave
                     card.addEventListener('mouseleave', () => {
                         card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
                         glare.style.opacity = '0';
@@ -270,14 +271,13 @@
                 });
             }
 
-            // --- 3. PARTICLE NETWORK ---
+            // --- 4. PARTICLE NETWORK ---
             function initParticles() {
                 const canvas = document.getElementById('particleCanvas');
                 if (!canvas) return;
                 const ctx = canvas.getContext('2d');
                 let particles = [];
                 let width, height;
-
                 function resize() {
                     width = window.innerWidth;
                     height = window.innerHeight;
@@ -286,7 +286,6 @@
                 }
                 window.addEventListener('resize', resize);
                 resize();
-
                 class Particle {
                     constructor() {
                         this.x = Math.random() * width;
@@ -308,12 +307,10 @@
                         ctx.fill();
                     }
                 }
-
                 function createParticles() {
                     const particleCount = width > 768 ? 80 : 40; 
                     for (let i = 0; i < particleCount; i++) particles.push(new Particle());
                 }
-
                 function animateParticles() {
                     ctx.clearRect(0, 0, width, height);
                     particles.forEach((p, index) => {
@@ -340,7 +337,7 @@
                 animateParticles();
             }
 
-            // --- 4. CLI TERMINAL ---
+            // --- 5. CLI TERMINAL ---
             function initCLI() {
                 const cliContainer = document.getElementById('cliContainer');
                 const input = document.getElementById('cliInput');
@@ -355,13 +352,10 @@
                         input.focus();
                     }, 10);
                 }
-
                 function closeCLI() {
                     cliContainer.style.transform = 'translateY(100%)';
                     document.body.classList.remove('cli-open');
-                    setTimeout(() => {
-                        cliContainer.style.display = 'none';
-                    }, 300);
+                    setTimeout(() => { cliContainer.style.display = 'none'; }, 300);
                 }
 
                 if (triggerBtn) triggerBtn.addEventListener('click', openCLI);
@@ -393,9 +387,7 @@
                             cmdLine.className = 'cli-line';
                             cmdLine.innerHTML = `<span class="prompt-char">></span> <span class="cli-cmd">${input.value}</span>`;
                             output.appendChild(cmdLine);
-
                             let response = commands[cmd] ? (typeof commands[cmd] === 'function' ? commands[cmd]() : commands[cmd]) : `<span class="cli-error">Command not found: ${cmd}</span>`;
-                            
                             if (response) {
                                 const respLine = document.createElement('div');
                                 respLine.className = 'cli-line cli-success';
@@ -409,20 +401,19 @@
                 });
             }
 
-            // --- 5. INITIALIZATION SEQUENCE ---
+            // --- 6. INITIALIZATION & UTILITIES ---
             if (typeof lucide !== 'undefined') lucide.createIcons();
             if (typeof emailjs !== 'undefined') emailjs.init(EMAILJS_PUBLIC_KEY);
 
             initParticles();
             initCLI();
-            initDecryptEffect(); // Start Decrypt
-            initTiltEffect();    // Start 3D Tilt
+            initDecryptEffect(); 
+            initGitHubFeed(); // Starts the API Call
 
             setTimeout(() => {
                 document.querySelectorAll('.boot-hidden').forEach(el => el.classList.add('boot-visible'));
             }, 100);
 
-            // --- 6. UTILITIES (Clock, Menu, Scroll, Form) ---
             function updateClock() {
                 const statusElement = document.querySelector('.status-indicator');
                 if (!statusElement) return;
