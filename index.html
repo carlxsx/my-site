@@ -2,20 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C.MIGUEL // DEVELOPER</title>
     <link rel="icon" type="image/png" sizes="50x50" href="resume/cm.png">
     <link rel="stylesheet" href="style.css">
     
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          // Replace with your Public Key from EmailJS Account Tab
-          emailjs.init("YWcE_pEySg9VCN6KU"); 
-       })();
-    </script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
 </head>
 <body>
 
@@ -38,27 +31,27 @@
             <a href="#about">Profile</a>
             <a href="#contact">Connect</a>
         </div>
-        <button class="menu-toggle" id="menuBtn">Menu</button>
+        <button class="menu-toggle" id="menuBtn" aria-label="Toggle Menu">Menu</button>
     </nav>
 
     <div class="mobile-overlay" id="mobileMenu">
-        <a href="#work" onclick="toggleMenu()">[ 01_WORK ]</a>
-        <a href="#about" onclick="toggleMenu()">[ 02_PROFILE ]</a>
-        <a href="#contact" onclick="toggleMenu()">[ 03_CONNECT ]</a>
-        <button class="menu-toggle" onclick="toggleMenu()" style="margin-top: 2rem;">CLOSE_TERMINAL</button>
+        <a href="#work" class="mobile-link">[ 01_WORK ]</a>
+        <a href="#about" class="mobile-link">[ 02_PROFILE ]</a>
+        <a href="#contact" class="mobile-link">[ 03_CONNECT ]</a>
+        <button class="menu-toggle close-btn" style="margin-top: 2rem;">CLOSE_TERMINAL</button>
     </div>
 
     <main class="main-layout">
         <section class="left-pane">
             <div class="hero-content">
                 <span class="version">LOC: 14.65N_121.05E // MNL</span>
-                <h1>CARLOS<br>MIGUEL</h1>
+                <h1 id="heroTitle">CARLOS<br>MIGUEL</h1>
                 <p class="role-desc">Fullstack Engineer specialized in high-performance digital systems and technical minimalism.</p>
                 
                 <div class="social-icons">
-                    <a href="https://github.com/carlxsx" target="_blank" title="GitHub"><i data-lucide="github"></i></a>
-                    <a href="https://linkedin.com/in/..." target="_blank" title="LinkedIn"><i data-lucide="linkedin"></i></a>
-                    <a href="https://facebook.com/..." target="_blank" title="Facebook"><i data-lucide="facebook"></i></a>
+                    <a href="https://github.com/carlxsx" target="_blank" rel="noopener noreferrer" title="GitHub"><i data-lucide="github"></i></a>
+                    <a href="https://linkedin.com/in/..." target="_blank" rel="noopener noreferrer" title="LinkedIn"><i data-lucide="linkedin"></i></a>
+                    <a href="https://facebook.com/..." target="_blank" rel="noopener noreferrer" title="Facebook"><i data-lucide="facebook"></i></a>
                     <a href="mailto:miguel.carlosc27@gmail.com" title="Email"><i data-lucide="mail"></i></a>
                 </div>
             </div>
@@ -70,7 +63,7 @@
                 <div id="work" class="section-container">
                     <div class="block-header">01 // SELECTED_PROJECTS</div>
                     <div class="project-list">
-                        <a href="https://github.com/carlxsx/Esmile.git" target="_blank" class="project-row">
+                        <a href="https://github.com/carlxsx/Esmile.git" target="_blank" rel="noopener noreferrer" class="project-row">
                             <div class="p-left">
                                 <div class="p-title-group">
                                     <span class="p-num">01</span>
@@ -82,7 +75,7 @@
                             <i data-lucide="external-link"></i>
                         </a>
 
-                        <a href="https://github.com/carlxsx/iWash.git" target="_blank" class="project-row">
+                        <a href="https://github.com/carlxsx/iWash.git" target="_blank" rel="noopener noreferrer" class="project-row">
                             <div class="p-left">
                                 <div class="p-title-group">
                                     <span class="p-num">02</span>
@@ -94,7 +87,7 @@
                             <i data-lucide="external-link"></i>
                         </a>
 
-                        <a href="https://github.com/carlxsx/SmartFaq.git" target="_blank" class="project-row">
+                        <a href="https://github.com/carlxsx/SmartFaq.git" target="_blank" rel="noopener noreferrer" class="project-row">
                             <div class="p-left">
                                 <div class="p-title-group">
                                     <span class="p-num">03</span>
@@ -106,7 +99,7 @@
                             <i data-lucide="external-link"></i>
                         </a>
 
-                        <a href="https://github.com/carlxsx/Facundo.git" target="_blank" class="project-row">
+                        <a href="https://github.com/carlxsx/Facundo.git" target="_blank" rel="noopener noreferrer" class="project-row">
                             <div class="p-left">
                                 <div class="p-title-group">
                                     <span class="p-num">04</span>
@@ -125,7 +118,7 @@
                     <div class="about-text">
                         <p>I bridge the gap between design and engineering. Currently pursuing BSIT at National University — Fairview.</p>
                         <p>Specialization: MERN Stack, Electron Desktop Apps, and Scalable Cloud Infrastructure.</p>
-                        <a href="resume/Carlos-Miguel-Angeles-Carino.pdf" class="cv-btn">
+                        <a href="resume/Carlos-Miguel-Angeles-Carino.pdf" class="cv-btn" target="_blank">
                             <i data-lucide="file-text"></i> DOWNLOAD_CV.PDF
                         </a>
                     </div>
@@ -137,16 +130,16 @@
                         <input type="text" id="alt_email_check" style="display:none !important" tabindex="-1" autocomplete="off">
 
                         <div class="form-row">
-                            <label>NAME:</label>
-                            <input type="text" name="user_name" required>
+                            <label for="user_name">NAME:</label>
+                            <input type="text" id="user_name" name="user_name" required>
                         </div>
                         <div class="form-row">
-                            <label>EMAIL:</label>
-                            <input type="email" name="user_email" required>
+                            <label for="user_email">EMAIL:</label>
+                            <input type="email" id="user_email" name="user_email" required>
                         </div>
                         <div class="form-row">
-                            <label>MESSAGE:</label>
-                            <textarea name="message" rows="4" required></textarea>
+                            <label for="message">MESSAGE:</label>
+                            <textarea id="message" name="message" rows="4" required></textarea>
                         </div>
                         <button type="submit" class="submit-btn">EXECUTE_SEND</button>
                     </form>
@@ -161,178 +154,191 @@
     </main>
 
     <script>
-        // 1. Initialize Lucide Icons
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- CONFIGURATION ---
+            const EMAILJS_PUBLIC_KEY = "YWcE_pEySg9VCN6KU"; 
+            const EMAILJS_SERVICE_ID = "service_2fb81h6";
+            const EMAILJS_ADMIN_TEMPLATE = "template_h0gz7ix";
+            const EMAILJS_AUTOREPLY_TEMPLATE = "template_jqj3873";
+            const LOCKOUT_TIME_MS = 10 * 60 * 1000; // 10 minutes
 
-        // 2. Mobile Menu Toggle Logic
-        const menuBtn = document.getElementById('menuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
+            // 1. Initialize Libraries
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            if (typeof emailjs !== 'undefined') emailjs.init(EMAILJS_PUBLIC_KEY);
 
-        function toggleMenu() {
-            mobileMenu.classList.toggle('active');
-            menuBtn.innerText = mobileMenu.classList.contains('active') ? 'Close' : 'Menu';
-        }
-        menuBtn.addEventListener('click', toggleMenu);
+            // 2. UI Elements
+            const menuBtn = document.getElementById('menuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileLinks = document.querySelectorAll('.mobile-link, .close-btn');
+            const rightPane = document.querySelector('.right-pane');
+            
+            // 3. Mobile Menu Logic
+            function toggleMenu() {
+                const isActive = mobileMenu.classList.toggle('active');
+                menuBtn.innerText = isActive ? 'Close' : 'Menu';
+            }
+            
+            if (menuBtn) {
+                menuBtn.addEventListener('click', toggleMenu);
+                // Close menu when a link inside it is clicked
+                mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+            }
 
-        // 3. Intelligent Smooth Scroll Logic
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const targetId = this.getAttribute('href');
-                if (targetId && targetId.startsWith('#')) {
-                    e.preventDefault();
+            // 4. Split-Pane Smooth Scroll Logic
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
                     const targetSection = document.querySelector(targetId);
+
                     if (targetSection) {
-                        if (window.innerWidth > 900) {
-                            const scrollContainer = document.querySelector('.right-pane');
+                        e.preventDefault();
+
+                        // Check if we are in desktop split view (width > 900px)
+                        if (window.innerWidth > 900 && rightPane) {
                             const targetPos = targetSection.offsetTop;
-                            scrollContainer.scrollTo({ top: targetPos, behavior: 'smooth' });
+                            rightPane.scrollTo({ top: targetPos, behavior: 'smooth' });
                         } else {
+                            // Mobile/Standard view
                             const offset = 80; 
-                            const bodyRect = document.body.getBoundingClientRect().top;
-                            const elementRect = targetSection.getBoundingClientRect().top;
-                            const elementPosition = elementRect - bodyRect;
-                            const offsetPosition = elementPosition - offset;
+                            const elementPosition = targetSection.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - offset;
                             window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                            if (mobileMenu.classList.contains('active')) toggleMenu();
                         }
                     }
-                }
+                });
             });
-        });
 
-        // 4. Live System Clock (Manila Time)
-        function updateClock() {
-            const statusElement = document.querySelector('.status-indicator');
-            if (!statusElement) return;
-            const now = new Date();
-            const options = { 
-                timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', 
-                second: '2-digit', hour12: false 
-            };
-            const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
-            statusElement.innerHTML = `<span class="blink"></span> SYSTEM_ACTIVE // ${timeString} // 2026`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock(); 
-
-        // 5. Terminal Typewriter Effect
-        function typeWriter(element, text, speed = 100) {
-            let i = 0;
-            element.innerHTML = ''; 
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
-
-        window.addEventListener('load', () => {
-            const heroTitle = document.querySelector('h1');
-            if (heroTitle) {
-                typeWriter(heroTitle, "CARLOS MIGUEL", 120); 
-            }
-        });
-
-        // 6. Final Form Submission (Fixed Variable Mapping & 10m Lock)
-        const contactForm = document.querySelector('.terminal-form');
-        const successOverlay = document.getElementById('successOverlay');
-
-        if (contactForm) {
-            const btn = contactForm.querySelector('.submit-btn');
-
-            function disableButton(ms) {
-                const mins = Math.ceil(ms / 60000);
-                btn.innerText = `SYSTEM_LOCKED: ${mins}m_REMAINING`;
-                btn.style.opacity = "0.5";
-                btn.disabled = true;
-                btn.style.cursor = "not-allowed";
+            // 5. Live System Clock (Manila Time)
+            function updateClock() {
+                const statusElement = document.querySelector('.status-indicator');
+                if (!statusElement) return;
                 
-                const timer = setInterval(() => {
-                    const remaining = localStorage.getItem('email_cooldown') - Date.now();
-                    if (remaining > 0) {
-                        const currentMins = Math.ceil(remaining / 60000);
-                        btn.innerText = `SYSTEM_LOCKED: ${currentMins}m_REMAINING`;
+                const now = new Date();
+                const options = { 
+                    timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', 
+                    second: '2-digit', hour12: false 
+                };
+                const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
+                statusElement.innerHTML = `<span class="blink"></span> SYSTEM_ACTIVE // ${timeString} // 2026`;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // 6. Typewriter Effect
+            const heroTitle = document.getElementById('heroTitle');
+            if (heroTitle) {
+                const text = "CARLOS MIGUEL";
+                let i = 0;
+                heroTitle.innerHTML = '';
+                
+                function type() {
+                    if (i < text.length) {
+                        heroTitle.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, 120);
                     } else {
-                        clearInterval(timer);
+                        // Restore the <br> visually if needed, or leave as single line
+                        heroTitle.innerHTML = text.replace(" ", "<br>"); 
+                    }
+                }
+                type();
+            }
+
+            // 7. Form Submission & Lockout Logic
+            const contactForm = document.querySelector('.terminal-form');
+            const successOverlay = document.getElementById('successOverlay');
+            
+            if (contactForm) {
+                const btn = contactForm.querySelector('.submit-btn');
+
+                function updateLockoutButton(remainingMs) {
+                    if (remainingMs <= 0) {
                         btn.innerText = "EXECUTE_SEND";
                         btn.style.opacity = "1";
                         btn.disabled = false;
                         btn.style.cursor = "pointer";
                         localStorage.removeItem('email_cooldown');
+                        return;
                     }
-                }, 10000);
-            }
 
-            const savedCooldown = localStorage.getItem('email_cooldown');
-            if (savedCooldown) {
-                const timeLeft = savedCooldown - Date.now();
-                if (timeLeft > 0) disableButton(timeLeft);
-            }
+                    const mins = Math.ceil(remainingMs / 60000);
+                    btn.innerText = `SYSTEM_LOCKED: ${mins}m_REMAINING`;
+                    btn.style.opacity = "0.5";
+                    btn.disabled = true;
+                    btn.style.cursor = "not-allowed";
 
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const honeypot = document.getElementById('alt_email_check');
-                if (honeypot && honeypot.value !== "") {
-                    successOverlay.classList.add('active');
-                    contactForm.reset();
-                    return;
+                    // Re-check in 10 seconds
+                    setTimeout(() => {
+                        const newRemaining = localStorage.getItem('email_cooldown') - Date.now();
+                        updateLockoutButton(newRemaining);
+                    }, 10000);
                 }
 
-                // FIND INPUTS BY NAME INSTEAD OF INDEX
-                const nameInput = contactForm.querySelector('[name="user_name"]');
-                const emailInput = contactForm.querySelector('[name="user_email"]');
-                const messageInput = contactForm.querySelector('[name="message"]');
-
-                if (!nameInput.value || !emailInput.value || !messageInput.value) {
-                    btn.innerText = "ERROR: DATA_MISSING";
-                    setTimeout(() => { btn.innerText = "EXECUTE_SEND"; }, 2000);
-                    return;
+                // Check cooldown on load
+                const savedCooldown = localStorage.getItem('email_cooldown');
+                if (savedCooldown) {
+                    const timeLeft = savedCooldown - Date.now();
+                    if (timeLeft > 0) updateLockoutButton(timeLeft);
                 }
 
-                btn.innerText = "STATUS: SENDING_VIA_RELAY...";
-                btn.style.opacity = "0.7";
-                
-                // These keys must match the {{variables}} in your EmailJS templates
-                const templateParams = {
-                    from_name: nameInput.value,
-                    reply_to: emailInput.value,
-                    message: messageInput.value,
-                    date: new Date().toLocaleString()
-                };
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
 
-                const serviceID = 'service_2fb81h6';
-                const adminTemplateID = 'template_h0gz7ix'; 
-                const autoReplyTemplateID = 'template_jqj3873'; 
-
-                // Sending Admin Notification
-                emailjs.send(serviceID, adminTemplateID, templateParams)
-                    .then(() => {
-                        // Sending Auto-Reply to User
-                        emailjs.send(serviceID, autoReplyTemplateID, templateParams);
-
-                        const tenMinutes = 10 * 60 * 1000;
-                        localStorage.setItem('email_cooldown', Date.now() + tenMinutes);
-
+                    // Honeypot check
+                    const honeypot = document.getElementById('alt_email_check');
+                    if (honeypot && honeypot.value !== "") {
+                        console.warn("Spam bot detected.");
                         successOverlay.classList.add('active');
-                        btn.innerText = "COMMAND_EXECUTED";
+                        setTimeout(() => successOverlay.classList.remove('active'), 2000);
                         contactForm.reset();
-                        
-                        setTimeout(() => {
-                            successOverlay.classList.remove('active');
-                            disableButton(tenMinutes);
-                        }, 3000);
+                        return;
+                    }
 
-                    }, (error) => {
-                        console.error('FAILED...', error);
-                        btn.innerText = "CRITICAL_ERROR";
-                        btn.style.opacity = "1";
-                    });
-            });
-        }
+                    const nameInput = contactForm.querySelector('[name="user_name"]');
+                    const emailInput = contactForm.querySelector('[name="user_email"]');
+                    const messageInput = contactForm.querySelector('[name="message"]');
+
+                    btn.innerText = "STATUS: SENDING_VIA_RELAY...";
+                    btn.style.opacity = "0.7";
+                    btn.disabled = true;
+
+                    const templateParams = {
+                        from_name: nameInput.value,
+                        reply_to: emailInput.value,
+                        message: messageInput.value,
+                        date: new Date().toLocaleString()
+                    };
+
+                    // Send Admin Email
+                    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_ADMIN_TEMPLATE, templateParams)
+                        .then(() => {
+                            // Send Auto-Reply (fire and forget)
+                            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_AUTOREPLY_TEMPLATE, templateParams);
+
+                            // Set Cooldown
+                            const cooldownExpiry = Date.now() + LOCKOUT_TIME_MS;
+                            localStorage.setItem('email_cooldown', cooldownExpiry);
+
+                            // Success UI
+                            successOverlay.classList.add('active');
+                            contactForm.reset();
+                            btn.innerText = "COMMAND_EXECUTED";
+
+                            setTimeout(() => {
+                                successOverlay.classList.remove('active');
+                                updateLockoutButton(LOCKOUT_TIME_MS);
+                            }, 3000);
+
+                        }).catch((error) => {
+                            console.error('FAILED...', error);
+                            btn.innerText = "CRITICAL_ERROR: RETRY";
+                            btn.style.opacity = "1";
+                            btn.disabled = false;
+                        });
+                });
+            }
+        });
     </script>
 </body>
 </html>
