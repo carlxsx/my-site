@@ -157,35 +157,46 @@
             const LOCKOUT_TIME_MS = 10 * 60 * 1000;
 
             // --- 1. OPTION F: LIVE GITHUB FEED ---
+            // --- 1. OPTION F: LIVE GITHUB FEED (FILTERED) ---
             async function initGitHubFeed() {
                 const container = document.getElementById('githubFeed');
                 
+                // CONFIG: The exact names of the repos you want to show (Case Sensitive!)
+                const TARGET_PROJECTS = ["Esmile", "iWash", "SmartFaq", "Facundo"];
+            
                 try {
-                    // Fetch repos sorted by latest update
-                    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&direction=desc&per_page=4`);
+                    // 1. Fetch ALL your repos (up to 100) so we don't miss any
+                    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`);
                     
                     if (!response.ok) throw new Error("GitHub API Error");
                     
-                    const repos = await response.json();
+                    const allRepos = await response.json();
                     
-                    // Clear loading/fallback content
+                    // 2. Filter: Find only the projects in your TARGET list
+                    const selectedRepos = TARGET_PROJECTS.map(targetName => {
+                        return allRepos.find(repo => repo.name.toLowerCase() === targetName.toLowerCase());
+                    }).filter(item => item !== undefined); // Remove any that weren't found
+            
+                    // Clear loading content
                     container.innerHTML = '';
-
-                    repos.forEach((repo, index) => {
-                        // Create Project Row
+            
+                    if (selectedRepos.length === 0) {
+                        container.innerHTML = '<div class="cli-line" style="color:red">>> ERROR: TARGET_PROJECTS_NOT_FOUND</div>';
+                        return;
+                    }
+            
+                    // 3. Render the selected ones
+                    selectedRepos.forEach((repo, index) => {
                         const row = document.createElement('a');
                         row.href = repo.html_url;
                         row.target = "_blank";
                         row.rel = "noopener noreferrer";
                         row.className = "project-row";
                         
-                        // Format description (truncate if too long)
                         let desc = repo.description || "[ NO_DESCRIPTION_AVAILABLE ]";
                         if (desc.length > 50) desc = desc.substring(0, 50) + "...";
-                        
-                        // Format Language
-                        const lang = repo.language ? repo.language.toUpperCase() : "RAW_CODE";
-
+                        const lang = repo.language ? repo.language.toUpperCase() : "CODE";
+            
                         row.innerHTML = `
                             <div class="p-left">
                                 <div class="p-title-group">
@@ -197,17 +208,15 @@
                             </div>
                             <i data-lucide="external-link"></i>
                         `;
-
+            
                         container.appendChild(row);
                     });
-
-                    // IMPORTANT: Re-initialize 3D Tilt and Icons on new elements
+            
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                     initTiltEffect(); 
-
+            
                 } catch (error) {
                     console.error("GitHub Feed Failed:", error);
-                    // If failed, we keep the fallback HTML or show an error
                     const statusLine = container.querySelector('.cli-line');
                     if (statusLine) statusLine.innerHTML = ">> UPLINK_FAILED. DISPLAYING_OFFLINE_CACHE.";
                 }
