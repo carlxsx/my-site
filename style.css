@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+/* Added Orbitron import here to keep all fonts in one place */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
 
 :root {
     --bg: #000000;
     --fg: #ffffff;
     --border: #222222;
-    --accent: #00ff00; 
+    --accent: #00ff00; /* Classic Terminal Green */
+    --term-dim: rgba(0, 255, 0, 0.1);
 }
 
 * { 
@@ -13,13 +16,69 @@
     box-sizing: border-box; 
 }
 
+/* --- GLOBAL SCROLLBAR STYLING (Webkit + Firefox) --- */
+html {
+    scrollbar-color: var(--accent) var(--bg);
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+/* --- TEXT SELECTION STYLING --- */
+::selection {
+    background: var(--accent);
+    color: #000;
+}
+
 body {
     background: var(--bg);
     color: var(--fg);
     font-family: 'Space Mono', monospace;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden; /* Main scroll handled by panes */
     -webkit-font-smoothing: antialiased;
+}
+
+/* --- CRT SCANLINE EFFECT (Moved from HTML) --- */
+.crt-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.2) 50%,
+        rgba(0, 0, 0, 0.2)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: flicker 0.15s infinite;
+    opacity: 0.15;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.15; }
+    5% { opacity: 0.12; }
+    10% { opacity: 0.15; }
+    100% { opacity: 0.15; }
 }
 
 /* Background Grid */
@@ -41,12 +100,15 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0 3rem;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85); /* Slightly darker for better read */
     backdrop-filter: blur(5px);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
+
+.boot-hidden { opacity: 0; transform: translateY(10px); transition: all 0.5s ease; }
+.boot-visible { opacity: 1; transform: translateY(0); }
 
 .status-indicator { 
     font-size: 0.7rem; 
@@ -76,7 +138,7 @@ body {
     transition: 0.3s; 
 }
 
-.nav-links a:hover { color: var(--accent); }
+.nav-links a:hover { color: var(--accent); text-shadow: 0 0 8px var(--term-dim); }
 
 /* Menu Toggles */
 .menu-toggle {
@@ -89,7 +151,10 @@ body {
     font-size: 0.7rem;
     cursor: pointer;
     text-transform: uppercase;
+    transition: 0.3s;
 }
+
+.menu-toggle:hover { background: var(--border); color: var(--accent); }
 
 .mobile-overlay {
     position: fixed;
@@ -105,7 +170,7 @@ body {
 }
 
 .mobile-overlay.active { transform: translateY(0); }
-.mobile-overlay a { font-size: 1.8rem; font-weight: 700; color: var(--fg); text-decoration: none; margin: 1.2rem 0; }
+.mobile-overlay a { font-size: 1.8rem; font-weight: 700; color: var(--fg); text-decoration: none; margin: 1.2rem 0; font-family: 'Orbitron', sans-serif; }
 .mobile-overlay a:hover { color: var(--accent); }
 
 /* Main Layout */
@@ -125,18 +190,19 @@ body {
 .right-pane {
     flex: 1.2;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--accent) var(--bg); /* Firefox */
     scroll-behavior: smooth;
     position: relative; 
 }
 
 .scroll-content { 
-    padding: 1.5rem 5rem 2rem; 
+    padding: 1.5rem 5rem 6rem; /* Added bottom padding so footer isn't cramped */
 }
 
 /* Hero Typography & Cursor */
 h1 { 
+    font-family: 'Orbitron', sans-serif; /* Tech Font */
     font-size: clamp(4rem, 8vw, 10rem); 
     line-height: 0.85; 
     margin-bottom: 2.5rem; 
@@ -172,9 +238,17 @@ h1::after {
     scroll-margin-top: 100px; 
 }
 
-.block-header { border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; margin-bottom: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 2px; }
+.block-header { 
+    border-bottom: 1px solid var(--border); 
+    padding-bottom: 0.8rem; 
+    margin-bottom: 1.5rem; 
+    font-size: 0.75rem; 
+    color: #555; 
+    letter-spacing: 2px;
+    font-family: 'Orbitron', sans-serif;
+}
 
-/* --- FIXED PROJECT LIST STYLING --- */
+/* --- PROJECT LIST STYLING --- */
 .project-row { 
     display: flex; 
     justify-content: space-between; 
@@ -184,23 +258,26 @@ h1::after {
     text-decoration: none; 
     color: var(--fg); 
     transition: 0.3s ease; 
+    position: relative;
+    overflow: hidden;
 }
 
 .project-row:hover { 
     background: rgba(0, 255, 0, 0.02); 
     padding-left: 1rem; 
+    border-bottom: 1px solid var(--accent);
 }
 
 .p-left {
     display: flex;
     flex-direction: column; 
-    gap: 10px; /* Space that pushes status line down */
+    gap: 10px; 
 }
 
 .p-title-group {
     display: flex;
     align-items: center;
-    gap: 15px; /* Space between num, name, and tag */
+    gap: 15px; 
 }
 
 .p-num {
@@ -210,6 +287,7 @@ h1::after {
 }
 
 .p-name { 
+    font-family: 'Orbitron', sans-serif;
     font-size: 2rem; 
     font-weight: 700; 
     line-height: 1;
@@ -232,7 +310,7 @@ h1::after {
     color: var(--accent); 
     opacity: 0.8;
     letter-spacing: 1px;
-    padding-left: 32px; /* Aligns status with name, skipping the number */
+    padding-left: 32px; 
 }
 
 .project-row i {
@@ -251,15 +329,37 @@ h1::after {
 .cv-btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); border: 1px solid var(--fg); padding: 1rem 2rem; font-size: 0.8rem; transition: 0.3s; }
 .cv-btn:hover { background: var(--fg); color: var(--bg); }
 
+/* Skill Terminal */
+.skill-terminal {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.skill-line { display: block; margin-bottom: 0.8rem; color: #ccc; }
+.prompt { opacity: 0.6; margin-right: 0.5rem; color: #666; }
+.cmd-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s step-end infinite; vertical-align: middle; }
+
 /* Form Styling */
 .form-row { display: flex; gap: 1.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; transition: 0.3s; }
-.form-row label { font-size: 0.8rem; color: #555; white-space: nowrap; }
+.form-row label { font-size: 0.8rem; color: #555; white-space: nowrap; padding-top: 2px;}
 .form-row input, .form-row textarea { 
     background: transparent; border: none; width: 100%; 
     color: var(--fg); font-family: inherit; font-size: 1rem; outline: none; 
     -webkit-appearance: none; appearance: none; border-radius: 0;
 }
 
+.form-row:focus-within {
+    border-bottom: 1px solid var(--accent);
+}
+
+.form-row:focus-within label {
+    color: var(--accent);
+}
+
+/* Error Shake Animation */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
@@ -277,11 +377,14 @@ h1::after {
     -webkit-appearance: none !important;
     appearance: none !important; 
     border-radius: 0 !important;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
 }
 
-.submit-btn:hover { background-color: var(--accent) !important; color: #000 !important; }
+.submit-btn:hover:not(:disabled) { background-color: var(--accent) !important; color: #000 !important; }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Success Overlay */
+/* Success Overlay & Glitch (Moved from HTML) */
 .success-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -292,10 +395,58 @@ h1::after {
 .success-overlay.active { display: flex; }
 
 .overlay-content { width: 100%; max-width: 400px; }
-.glitch-text { font-size: clamp(1.2rem, 6vw, 2rem); font-weight: 700; color: var(--accent); letter-spacing: 3px; margin-bottom: 1rem; text-transform: uppercase; }
+
+/* GLITCH CSS IMPLEMENATION */
+.glitch-text { 
+    font-size: clamp(1.2rem, 6vw, 2rem); 
+    font-weight: 700; 
+    color: var(--accent); 
+    letter-spacing: 3px; 
+    margin-bottom: 1rem; 
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+}
+
+.glitch-text::before, .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+}
+
+.glitch-text::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    clip-path: inset(0 0 0 0); 
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+    left: -2px;
+    text-shadow: -1px 0 blue;
+    clip-path: inset(0 0 0 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% { clip-path: inset(20% 0 80% 0); }
+    20% { clip-path: inset(60% 0 10% 0); }
+    40% { clip-path: inset(40% 0 50% 0); }
+    60% { clip-path: inset(80% 0 5% 0); }
+    80% { clip-path: inset(10% 0 60% 0); }
+    100% { clip-path: inset(30% 0 30% 0); }
+}
+@keyframes glitch-anim-2 {
+    0% { clip-path: inset(10% 0 60% 0); }
+    20% { clip-path: inset(30% 0 20% 0); }
+    40% { clip-path: inset(70% 0 10% 0); }
+    60% { clip-path: inset(20% 0 50% 0); }
+    80% { clip-path: inset(60% 0 20% 0); }
+    100% { clip-path: inset(10% 0 80% 0); }
+}
+
 .loading-bar { width: 100%; max-width: 250px; height: 2px; background: #222; margin: 25px auto; overflow: hidden; }
 .bar-fill { width: 0%; height: 100%; background: var(--accent); animation: fillProgress 2s ease-in-out forwards; }
-
 @keyframes fillProgress { 0% { width: 0%; } 100% { width: 100%; } }
 
 /* Footer */
@@ -310,12 +461,181 @@ h1::after {
     .nav-links { display: none; }
     .menu-toggle { display: block; }
     .main-layout { flex-direction: column; height: auto; }
-    .left-pane { flex: none; width: 100%; padding: 4rem 1.5rem 2rem; border-right: none; border-bottom: 1px solid var(--border); }
-    h1 { font-size: 18vw; }
+    
+    .left-pane { 
+        flex: none; width: 100%; 
+        padding: 5rem 1.5rem 3rem; 
+        border-right: none; 
+        border-bottom: 1px solid var(--border); 
+        min-height: 80vh; /* Make hero take up most of screen on mobile */
+        justify-content: center;
+    }
+    
+    h1 { font-size: 15vw; }
     .right-pane { flex: none; width: 100%; overflow: visible; }
-    .scroll-content { padding: 2rem 1.5rem; }
+    .scroll-content { padding: 3rem 1.5rem; }
+    
+    /* Project Row Mobile Fixes */
     .p-title-group { flex-wrap: wrap; gap: 8px; }
     .p-name { font-size: 1.6rem; }
-    .p-status { padding-left: 0; }
+    .p-status { padding-left: 0; display: block; margin-top: 5px;}
     .project-row { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+
+/* --- OPTION D: PARTICLE NETWORK BACKGROUND --- */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Behind everything */
+    opacity: 0.4; /* Subtle visibility */
+    pointer-events: none; /* Let clicks pass through */
+}
+
+/* --- OPTION A: COMMAND LINE INTERFACE (CLI) --- */
+.cli-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: 40vh; /* Don't take up too much screen */
+    background: rgba(0, 0, 0, 0.95);
+    border-top: 1px solid var(--accent);
+    color: var(--fg);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    padding: 1rem;
+    z-index: 2000; /* Above nav and content */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 -5px 20px rgba(0, 255, 0, 0.1);
+}
+
+.cli-output {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Hide scrollbar for cleanliness */
+}
+
+.cli-line {
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.cli-success { color: var(--accent); }
+.cli-error { color: #ff3333; }
+.cli-cmd { color: #fff; font-weight: bold; }
+
+.cli-input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.prompt-char {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+#cliInput {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    flex: 1;
+    outline: none;
+    caret-color: var(--accent); /* Blinking cursor color */
+}
+
+/* Mobile: Hide CLI to save space, or make it smaller */
+@media (max-width: 768px) {
+    .cli-container {
+        display: none; /* Hiding on mobile for UX safety */
+    }
+}
+
+/* --- CLI TRIGGER BUTTON --- */
+.cli-trigger {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 15px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    z-index: 1999; /* Just below the CLI itself */
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.cli-trigger:hover {
+    opacity: 1;
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 10px var(--accent);
+}
+
+/* Hide trigger when CLI is open (Optional, but looks cleaner) */
+.cli-open .cli-trigger {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- OPTION I: 3D TILT & GLARE --- */
+.project-list {
+    perspective: 1000px; /* Essential for 3D effect */
+}
+
+.project-row {
+    /* Existing styles remain... */
+    position: relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+    /* Remove the old transition for transform to make movement instant/smooth */
+    transition: transform 0.1s ease-out, background 0.3s; 
+}
+
+/* The Glare Effect Layer */
+.glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at 50% 50%, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 80%
+    );
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s;
+    z-index: 2;
+}
+
+.project-row:hover .glare {
+    opacity: 1;
+}
+
+/* --- OPTION H: DECRYPT TEXT --- */
+.reveal-text {
+    /* Monospace font is required for the scramble to look good */
+    font-family: 'Space Mono', monospace; 
+    min-height: 1em;
+    display: inline-block;
 }
