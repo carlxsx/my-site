@@ -384,17 +384,77 @@ h1::after {
 .submit-btn:hover:not(:disabled) { background-color: var(--accent) !important; color: #000 !important; }
 .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Success Overlay & Glitch (Moved from HTML) */
+/* --- SUCCESS OVERLAY (CENTERED FIX) --- */
 .success-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.98);
     z-index: 10000;
-    display: none; justify-content: center; align-items: center; text-align: center; padding: 1.5rem;
+    display: none; /* Hidden by default */
+    /* Flexbox for Screen Centering */
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
 }
-.success-overlay.active { display: flex; }
 
-.overlay-content { width: 100%; max-width: 400px; }
+.success-overlay.active {
+    display: flex !important; /* Forces flex when active */
+}
+
+.overlay-content {
+    width: 100%;
+    max-width: 600px;
+    /* Internal Flexbox to Center Text/Bar */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
+}
+
+.glitch-text {
+    font-size: clamp(1.2rem, 6vw, 2.5rem);
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+    display: inline-block; /* Keeps the glitch box tight to text */
+}
+
+/* Ensure Pseudo-elements align perfectly */
+.glitch-text::before, .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+/* ... keep your glitch-anim keyframes here ... */
+
+.loading-bar {
+    width: 100%;
+    max-width: 250px;
+    height: 2px;
+    background: #222;
+    margin: 25px auto; /* Auto margins to reinforce centering */
+    overflow: hidden;
+}
+
+.bar-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--accent);
+    animation: fillProgress 2s ease-in-out forwards;
+}
 
 /* GLITCH CSS IMPLEMENATION */
 .glitch-text { 
